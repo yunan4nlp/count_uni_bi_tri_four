@@ -8,17 +8,20 @@ using namespace std;
 
 #include "Utf.h"
 
-void show(map<string, long long>& state);
+void save(ofstream& os,map<string, long>& state);
+static int verboseIter = 1000;
 
 int main(int argc, char* argv[]){
 	string line;
 	vector<string> chs;
-	map<string, long long> uni, bi, tri, four;
-	for (int file_num = 1; file_num < argc; file_num++)
+	map<string, long> uni, bi, tri, four;
+	for (int file_num = 1; file_num < argc - 1; file_num++)
 	{
 		ifstream read(argv[file_num]);
 		if (read.is_open())
 		{
+			cout << "Count " << argv[file_num] << " file.." << endl;
+			int line_num = 0;
 			while (getline(read, line))
 			{
 				getCharactersFromUTF8String(line, chs);
@@ -31,7 +34,11 @@ int main(int argc, char* argv[]){
 					tri["TRI=" + chs[idx] + "#" + chs[idx + 1] + "#" + chs[idx + 2]]++;
 				for (int idx = 0; idx < char_size - 3; idx++)
 					four["FOUR=" + chs[idx] + "#" + chs[idx + 1] + "#" + chs[idx + 2] + "#" + chs[idx + 3]]++;
+				line_num++;
+				if (line_num % verboseIter == 0)
+					cout << line_num << " ";
 			}
+			cout << endl;
 			read.close();
 		}
 		else {
@@ -39,18 +46,33 @@ int main(int argc, char* argv[]){
 			return 0;
 		}
 	}
-	show(uni);
-	show(bi);
-	show(tri);
-	show(four);
+	ofstream os(argv[argc - 1]);
+	if (os.is_open()) {
+		cout << "save state to " << argv[argc - 1] << "..." << endl;
+		cout << "save uni..." << endl;
+		save(os, uni);
+		cout << "save bi..." << endl;
+		save(os, bi);
+		cout << "save tri..." << endl;
+		save(os, tri);
+		cout << "save four..." << endl;
+		save(os, four);
+		os.close();
+		cout << "save ok" << endl;
+	}
 	return 0;
 }
 
-void show(map<string, long long>& count){
-	for (map<string, long long>::iterator it = count.begin();
-		it != count.end(); it++)
+void save(ofstream& os, map<string, long>& state) {
+	int line_num = 0;
+	for (map<string, long>::iterator it = state.begin();
+		it != state.end(); it++)
 	{ 
-		cout << it->first << '\t' << it->second << endl;
+		os << it->first << '\t' << it->second << endl;
+		line_num++;
+		if (line_num % verboseIter == 0)
+			cout << line_num << " ";
 	}
+	cout << endl;
 }
 	
