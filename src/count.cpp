@@ -27,13 +27,13 @@ int main(int argc, char* argv[]){
 				getCharactersFromUTF8String(line, chs);
 				int char_size = chs.size();
 				for (int idx = 0; idx < char_size; idx++)
-					uni["UNI=" + chs[idx]]++;
+					uni[chs[idx]]++;
 				for (int idx = 0; idx < char_size - 1; idx++)
-					bi["BI=" + chs[idx] + "#" + chs[idx + 1]]++;
+					bi[chs[idx] + "@$" + chs[idx + 1]]++;
 				for (int idx = 0; idx < char_size - 2; idx++)
-					tri["TRI=" + chs[idx] + "#" + chs[idx + 1] + "#" + chs[idx + 2]]++;
+					tri[chs[idx] + "@$" + chs[idx + 1] + "@$" + chs[idx + 2]]++;
 				for (int idx = 0; idx < char_size - 3; idx++)
-					four["FOUR=" + chs[idx] + "#" + chs[idx + 1] + "#" + chs[idx + 2] + "#" + chs[idx + 3]]++;
+					four[chs[idx] + "@$" + chs[idx + 1] + "@$" + chs[idx + 2] + "@$" + chs[idx + 3]]++;
 				line_num++;
 				if (line_num % verboseIter == 0)
 					cout << line_num << " ";
@@ -68,7 +68,7 @@ void save(ofstream& os, map<string, long>& state) {
 	for (map<string, long>::iterator it = state.begin();
 		it != state.end(); it++)
 	{ 
-		os << it->first << '\t' << it->second << endl;
+		os << it->first << ' ' << it->second << endl;
 		line_num++;
 		if (line_num % verboseIter == 0)
 			cout << line_num << " ";
